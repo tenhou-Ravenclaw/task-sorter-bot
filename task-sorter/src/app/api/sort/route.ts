@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
+    console.log("API Key Status:", process.env.GEMINI_API_KEY ? "Loaded" : "Missing");
     const { text } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY;
 
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const systemPrompt = `
     あなたはエンジニア専属タスクマネージャーです。
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ result: response });
   } catch (error) {
+    console.error("🚨 Gemini API Error Details:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
